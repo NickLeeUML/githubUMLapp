@@ -1,6 +1,6 @@
 const express = require('express')
-const octokit = require('@octokit/rest')
-const { App } = require('@octokit/app')
+const { App } = require('@octokit/app')  // used to get auth tokens for use with, avoids having to use 'jsonwebtoken'
+const octokitRequest = require('@octokit/rest')
 const jsonwebtoken = require('jsonwebtoken')
 require('dotenv').config()
 var fs = require('fs');
@@ -21,8 +21,9 @@ function generateJwtToken(){  // will generate a JWT that will expire in like 10
  )
 }
 
-async function authApp(){  //lets instalations of my app, and gets an installation id 
-    const clientWithAuth = await new octokit({auth: generateJwtToken()})
+async function authApp(){  //authenticates as an app and gets an installation id based on supplied username
+    const clientWithAuth = await new octokitRequest({auth: generateJwtToken()})
+
     const data = await clientWithAuth.apps.listInstallations()
     console.log("Instalations: ", data)
     const result = await  clientWithAuth.apps.getUserInstallation({
@@ -32,20 +33,25 @@ async function authApp(){  //lets instalations of my app, and gets an installati
 }
 
 
-async function authenticateAppliction(){  //going to be used as middleware  on each reques 
-   const app = await new octokit({auth: generateJwtToken()})
+async function authenticateAppliction(){  // returns and authorized instance of the app, going to be used as middleware  on each request 
+   const app = await new octokitRequest({auth: generateJwtToken()}) 
    return app;
 }
 
-async function getUserInstallation(authenticateApp, username){  //returns user installation id 
+async function getUserInstallation(authenticateApp, username){  //returns user installation id, also found on when user sign ups,
     const result = await  authenticateApp.apps.getUserInstallation({
         'username' : "NickLeeUML"
       })
-    return result.data.id
+    return result.data.id                                   //  contains installation id used to authenticate as an installation
 }
 
-async function InstallationAccessToken(id){
+async function getUserInstallationWithAppjs(){
     const app = new App({ id: ISSUER_ID, privateKey: PEM })
+
+}
+
+async function InstallationAccessToken(id){ // 
+    const app = new App({ id: ISSUER_ID, privateKey: PEM })  // app is an authenticated app,  is this the same as  'new octokitRequest({auth: generateJWtToken}) ?
     app.getInstallationAccessToken({
         installationId: id
     }).then(data=>{
@@ -59,10 +65,23 @@ async function InstallationAccessToken(id){
 function authenticateInstallation(installation_id){
 }
 
+
+async function auth(){
+    const clientWithAut = await new octokitRequest({auth: generateJwtToken()})
+
+    const { data: {token} } =  await clientWithAut.apps.createInstallationToken({
+        installation_id: '1164645',
+    })
+    return await clientWithAut.authenticate({type: 'token', token})
+}
+
+
 module.exports = {
     authenticateAppliction: authenticateAppliction,
     InstallationAccessToken: InstallationAccessToken,
-    getUserInstallation, getUserInstallation
+    getUserInstallation, getUserInstallation,
+    auth: auth,
+    generateJwtToken:generateJwtToken,
 
 };
 
@@ -77,14 +96,6 @@ async  function main(){
 
 //authApp();
 
-// async function auth(){
-//     const clientWithAut = await new octokit({auth: generateJwtToken()})
-
-//     const { data: {token} } =  await clientWithAut.apps.createInstallationToken({
-//         installation_id: '1147117',
-//     })
-//     clientWithAut.authenticate({type: 'token', token})
-// }
 
 // const options = {
 //     hostname: 'https://api.github.com',
