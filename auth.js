@@ -62,6 +62,25 @@ async function InstallationAccessToken(id){ //
     })
 }
 
+ function InstallationAccessTokenPromise(id){ // 
+    return new Promise((resolve, reject)=>{
+        const app = new App({ id: ISSUER_ID, privateKey: PEM })  // app is an authenticated app,  is this the same as  'new octokitRequest({auth: generateJWtToken}) ?
+        app.getInstallationAccessToken({
+            installationId: id
+        }).then(data=>{
+            resolve(data)
+        })
+        .catch(e=>{
+
+            console.log('error with installation access token', e)
+            reject(e)
+        })
+    })
+   
+}
+
+
+
 function authenticateInstallation(installation_id){
 }
 
@@ -82,6 +101,7 @@ module.exports = {
     getUserInstallation, getUserInstallation,
     auth: auth,
     generateJwtToken:generateJwtToken,
+    InstallationAccessTokenPromise:InstallationAccessTokenPromise
 
 };
 

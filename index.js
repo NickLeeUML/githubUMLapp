@@ -3,7 +3,7 @@ const octokitRequest = require('@octokit/rest')
 const { request } = require('@octokit/request')
 const jsonwebtoken = require('jsonwebtoken')
 const bodyParser = require('body-parser')
-const {authenticateAppliction,InstallationAccessToken,auth,generateJwtToken} = require("./auth.js")
+const {authenticateAppliction,InstallationAccessToken,auth,generateJwtToken,InstallationAccessTokenPromise} = require("./auth.js")
 const chalk = require('chalk');
 const util = require('util')
 const fs = require('fs');
@@ -22,21 +22,24 @@ const port = 3000
 
 app.use(bodyParser.json())
 
-// app.use(function(req,res,next){
-//     console.log(util.inspect(req, false, null, true /* enable colors */))
-//     fs.writeFile("requestlog", util.inspect(req, false, null, true /* enable colors */), function(err){
-//         if(err){return console.log(err)}
-//         console.log("file saved")
-//     })
-//     console.log("Incomming request: ", util.inspect(req, false, null, true /* enable colors */))
-//     next()
-// })
-
+app.use(function(req,res,next){
+    fs.writeFile("requestlog", util.inspect(req, false, null, true /* enable colors */), function(err){
+        if(err){return console.log(err)}
+        console.log("file saved")
+    })
+    next()
+})
 
 app.use(async (req,res,next)=>{
-    authedApp = await authenticateAppliction()
-    InstallationAccessToken(req.body.installation.id)
-    req.body["authedApp"] = authedApp;
+    // authedApp = await authenticateAppliction()
+    // req.body['authedApp'] = authedApp;
+
+    const token = await InstallationAccessTokenPromise(req.body.installation.id)
+
+    const installationApp = await new octokitRequest({auth: token})
+
+    req.body['installationApp'] = installationApp;
+    // req.body['installationToken'] = token;
     next();
 })
 
@@ -46,13 +49,11 @@ app.post('/events', async (req, res)=>{
 
     switch (event) {
         case 'pull_request':
-            console.log("create run check")
+            // const AuthedApp = await new octokitRequest({auth: generateJwtToken()})
 
-            const AuthedApp = await new octokitRequest({auth: generateJwtToken()})
-
-            const { data: {token} } =  await AuthedApp.apps.createInstallationToken({
-                installation_id: '1164645',
-            })
+            // const { data: {token} } =  await AuthedApp.apps.createInstallationToken({
+            //     installation_id: '1164645',
+            // })
             
             const owner = "NickLeeUML";
             const repo = "selenium-library";  
@@ -72,8 +73,9 @@ app.post('/events', async (req, res)=>{
             // })
 
             //or this 
-            const app = await new octokitRequest({auth: token})
-
+            
+            //const app = await new octokitRequest({auth: req.body.installationToken})
+            const app = req.body.installationApp; 
             app.checks.create({
                 owner,
                 repo,
@@ -91,14 +93,21 @@ app.post('/events', async (req, res)=>{
                     console.log(req.body)
                     break;
                 case 'created':
-                    initiate_check_run(req)
                     console.log('created')
+
+                    initiate_check_run(req)
                     break;
                 case 'completed':
                     console.log('completed')
                     break;
                 case 'requested_action':
                     console.log('requested_action')
+                    break;
+                case 'reopened':
+
+
+                default: 
+                    console.log('default check run');
                     break;
             }
         default:
