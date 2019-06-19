@@ -87,12 +87,7 @@ async function auth(){
 
 
 module.exports = {
-    authenticateAppliction: authenticateAppliction,
-    InstallationAccessToken: InstallationAccessToken,
-    getUserInstallation, getUserInstallation,
-    auth: auth,
-    generateJwtToken:generateJwtToken,
-    InstallationAccessTokenPromise:InstallationAccessTokenPromise
+    InstallationAccessTokenPromise
 };
 
 async  function main(){

@@ -3,18 +3,11 @@ const octokitRequest = require('@octokit/rest');
 const { request } = require('@octokit/request');
 const jsonwebtoken = require('jsonwebtoken');
 const bodyParser = require('body-parser');
-const {authenticateAppliction,InstallationAccessToken,auth,generateJwtToken,InstallationAccessTokenPromise} = require("./auth.js");
+const { InstallationAccessTokenPromise } = require("./auth.js");
 const chalk = require('chalk');
 const util = require('util');
 const fs = require('fs');
 require('dotenv').config();
-
-let authedApp;
-let authedInstallation;
-
-const PEM = process.env.PRIVATE_KEY;
-const ISSUER_ID = process.env.GITHUB_APP_IDENTIFIER;
-const APP_SECRET = process.env.GITHUB_WEBHOOK_SECRET;
 
 const app = express();
 const port = 3000;
@@ -97,7 +90,6 @@ function create_check_run(req){
     })
 }
 
-//update function to use authed installation on request
 async function initiate_check_run(req){
     const owner = "NickLeeUML";
     const repo = "selenium-library";
