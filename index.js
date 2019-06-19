@@ -42,7 +42,8 @@ app.use(async (req,res,next)=>{
 
 app.post('/events', async (req, res)=>{
     const event = req.headers['x-github-event']; 
-    console.log(event)
+    console.log("Event: ", event);
+
     switch (event) {
         case 'pull_request':
             console.log("create run check")
@@ -83,19 +84,25 @@ app.post('/events', async (req, res)=>{
             })
            // createCheckrun(app,req)
 
-        case 'check_suite':
+        case 'check_run':
+            console.log("req.body.action: ", req.body.action)
             switch(req.body.action) {
                 case 'rerequested': 
                     console.log('rerequested')
+                    console.log(req.body)
+                    break;
                 case 'created':
+                    initiate_check_run(req)
                     console.log('created')
+                    break;
                 case 'completed':
                     console.log('completed')
+                    break;
                 case 'requested_action':
                     console.log('requested_action')
+                    break;
             }
         default:
-            console.log("default")
     }
 
 })
@@ -125,21 +132,62 @@ function createCheckrun(authedInstallation,req){
     })
 }
 
-async function initiate_check_run(){
-    // octokit.checks.update({
-    //     owner,
-    //     repo,
-    //     check_run_id
-    // })
+async function initiate_check_run(req){
 
-    await request("PATCH /repos/:owner/:repo/:check-runs/:chrck_run_id",{
+    
+    const AuthedApp = await new octokitRequest({auth: generateJwtToken()})
+    const { data: {token} } =  await AuthedApp.apps.createInstallationToken({
+        installation_id: '1164645',
+    })
+    
+    const owner = "NickLeeUML";
+    const repo = "selenium-library";  
+    const name = "Nicks Check";
+    const check_run_id = req.body.check_run.id;
+    let status = "in_progress";
+    let date = new Date();
+    date.toISOString(); //"2011-12-19T15:28:46.493Z"
+    let started_at = date;
+
+    const installation = await new octokitRequest({auth: token})
+
+    
+
+    installation.checks.update({
         owner,
         repo,
+        name,
         check_run_id,
-        headers: {
-            authorization: `token ${token}`,
-            accept: "application/vnd.github.antiope-preview+json"
-        },
+        status,
+        started_at,
+    })
+    
+
+    //do ci test here
+    
+    status = "completed";
+    const conclusion = "success";
+    date = new Date();
+    date.toISOString(); //"2011-12-19T15:28:46.493Z"
+    let completed_at = date;
+
+    installation.checks.update({
+        owner,
+        repo,
+        name,
+        check_run_id,
+        status,
+        conclusion,
+        completed_at,
     })
 
+    // await request("PATCH /repos/:owner/:repo/:check-runs/:chrck_run_id",{
+    //     owner,
+    //     repo,
+    //     check_run_id,
+    //     headers: {
+    //         authorization: `token ${token}`,
+    //         accept: "application/vnd.github.antiope-preview+json"
+    //     },
+    // })
 }
