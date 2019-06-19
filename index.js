@@ -99,12 +99,6 @@ function create_check_run(req){
 
 //update function to use authed installation on request
 async function initiate_check_run(req){
-
-    const AuthedApp = await new octokitRequest({auth: generateJwtToken()});
-    const { data: {token} } =  await AuthedApp.apps.createInstallationToken({
-        installation_id: '1164645',
-    });
-    
     const owner = "NickLeeUML";
     const repo = "selenium-library";
     const name = "Nicks Check";
@@ -114,9 +108,9 @@ async function initiate_check_run(req){
     date.toISOString(); //"2011-12-19T15:28:46.493Z"
     let started_at = date;
 
-    const installation = await new octokitRequest({auth: token});
+    const app = req.body.installationApp; 
 
-    installation.checks.update({
+    app.checks.update({
         owner,
         repo,
         name,
@@ -133,7 +127,7 @@ async function initiate_check_run(req){
     date.toISOString(); //"2011-12-19T15:28:46.493Z"
     let completed_at = date;
 
-    installation.checks.update({
+    app.checks.update({
         owner,
         repo,
         name,
