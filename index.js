@@ -74,7 +74,6 @@ app.post('/events', async (req, res)=>{
             //or this 
             const app = await new octokitRequest({auth: token})
 
-
             app.checks.create({
                 owner,
                 repo,
@@ -134,7 +133,6 @@ function createCheckrun(authedInstallation,req){
 
 async function initiate_check_run(req){
 
-    
     const AuthedApp = await new octokitRequest({auth: generateJwtToken()})
     const { data: {token} } =  await AuthedApp.apps.createInstallationToken({
         installation_id: '1164645',
@@ -151,8 +149,6 @@ async function initiate_check_run(req){
 
     const installation = await new octokitRequest({auth: token})
 
-    
-
     installation.checks.update({
         owner,
         repo,
@@ -164,7 +160,7 @@ async function initiate_check_run(req){
     
 
     //do ci test here
-    
+
     status = "completed";
     const conclusion = "success";
     date = new Date();
