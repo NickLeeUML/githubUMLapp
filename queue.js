@@ -5,9 +5,7 @@ if (process.env.NODE_ENV !== 'production') {
 
 const queueSvc = azure.createQueueService();
 
-
 queueSvc.messageEncoder = new azure.QueueMessageEncoder.TextBase64QueueMessageEncoder();
-
 
 queueSvc.createMessage('teststatus', "Boston!", function(error, results, response){
     if(!error){
