@@ -1,8 +1,7 @@
 //he    const {UITest} = require("./uitest/index.js")
 import UITest from "./uitest/index.js"
 
-const test = new UITest("Amaan was here")
-test.logURL()
+
 
 async function initiate_check_run(req) {
     const owner = 'NickLeeUML';
@@ -30,7 +29,21 @@ async function initiate_check_run(req) {
     date.toISOString(); //"2011-12-19T15:28:46.493Z"
     let completed_at = date;
 
-    //do ci test here
+    const test = new UITest("Amaan was here")
+    const result = await test.start()
+
+    switch(result) {
+        case "differences":
+            console.log("differences"); 
+            break;
+        case "no differences":
+            console.log('no differences');
+            break
+        default: 
+            console.log('Not match')
+    }  
+
+
 
     app.checks.update({
         owner,
