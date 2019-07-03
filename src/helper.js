@@ -1,3 +1,9 @@
+//he    const {UITest} = require("./uitest/index.js")
+import UITest from "./uitest/index.js"
+
+const test = new UITest("Amaan was here")
+test.logURL()
+
 async function initiate_check_run(req) {
     const owner = 'NickLeeUML';
     const repo = 'selenium-library';
@@ -16,7 +22,7 @@ async function initiate_check_run(req) {
         name,
         check_run_id,
         status,
-        started_at,
+        started_at
     });
     status = 'completed';
     const conclusion = 'success';

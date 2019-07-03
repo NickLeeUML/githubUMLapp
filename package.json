@@ -1,25 +1,40 @@
 {
   "name": "GitHubApp",
   "version": "1.0.0",
+  "private": true,
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "build": "rimraf build/ && babel src/ --out-dir build/",
+    "start": "npm run build && node build/index.js"
+  },
   "dependencies": {
+    "@babel/polyfill": "^7.4.4",
     "@octokit/app": "^3.0.0",
     "@octokit/rest": "^16.28.1",
     "azure-functions-core-tools": "^2.7.1373",
     "azure-storage": "^2.10.3",
+    "babel-preset-env": "^1.7.0",
     "body-parser": "^1.19.0",
     "chalk": "^2.4.2",
     "dotenv": "^8.0.0",
+    "esm": "^3.2.25",
     "express": "^4.17.1",
     "https": "^1.0.0",
     "jsonwebtoken": "^8.5.1",
     "morgan": "^1.9.1",
     "node-rsa": "^1.0.5",
+    "request": "^2.88.0",
+    "rimraf": "^2.6.3",
+    "selenium-webdriver": "4.0.0-alpha.1",
     "smee-client": "^1.1.0",
     "util": "^0.12.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.4.4",
+    "@babel/core": "^7.4.5",
+    "@babel/plugin-transform-async-to-generator": "^7.4.4",
+    "@babel/preset-env": "^7.4.5",
     "prettier": "1.18.2"
   }
 }

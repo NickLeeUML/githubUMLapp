@@ -8,6 +8,9 @@ const util = require('util');
 const fs = require('fs');
 require('dotenv').config();
 
+import "@babel/polyfill";
+
+
 const { InstallationAccessTokenPromise } = require('./auth.js');
 const { initiate_check_run, create_check_run } = require('./helper.js');
 
