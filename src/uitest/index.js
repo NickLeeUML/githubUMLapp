@@ -11,7 +11,67 @@ dotenv.config();
 
 export default class UITest {
     constructor(url) {
+        this.status = {
+            running: false,
+            error: false,
+            errorMessage: ""
+        }
         this.remoteHub = "http://hub.crossbrowsertesting.com:80/wd/hub'";
+        this.browserConfigurations = {
+            windows10Chrome : {
+                'browserName': 'Chrome',
+                'version': '75x64',
+                'platform': 'Windows 10',
+                'screenResolution': '1366x768'
+            },
+            windows10Firefox : {
+                'browserName': 'Firefox',
+                'version': '67x64',
+                'platform': 'Windows 10',
+                'screenResolution': '1366x768'
+            },
+            windows10Edge : {
+                'browserName': 'MicrosoftEdge',
+                'version': '18',
+                'platform': 'Windows 10',
+                'screenResolution': '1366x768'
+            },
+            osxSafari: {
+                'browserName': 'Safari',
+                'version': '12',
+                'platform': 'Mac OSX 10.14',
+                'screenResolution': '1366x768'
+            },
+            osxFirefox: {
+                'browserName': 'Firefox',
+                'version': '67',
+                'platform': 'Mac OSX 10.14',
+                'screenResolution': '1366x768'
+            },
+            osxChrome: {
+                'browserName': 'Chrome',
+                'version': '75x64',
+                'platform': 'Mac OSX 10.14',
+                'screenResolution': '1366x768'
+            }
+
+        };
+        this.screenSizes = {
+            small: {
+                height: 900,
+                width: 500
+            },
+
+            medium: {
+                height: 900,
+                width: 900,
+            },
+
+            large: {
+                height: 1200,
+                width: 500
+            }
+        }
     }
 
     start() {
@@ -60,6 +120,8 @@ function processScripts(){
 }
 
   //processScripts()
+
+
 
 
 webdriver.WebDriver.prototype.takeSnapshot = function() {
