@@ -1,7 +1,5 @@
-//he    const {UITest} = require("./uitest/index.js")
-import UITest from "./uitest/index.js"
-
-
+import UITest from './uitest/index.js';
+import '@babel/polyfill';
 
 async function initiate_check_run(req) {
     const owner = 'NickLeeUML';
@@ -21,7 +19,7 @@ async function initiate_check_run(req) {
         name,
         check_run_id,
         status,
-        started_at
+        started_at,
     });
     status = 'completed';
     const conclusion = 'success';
@@ -29,21 +27,19 @@ async function initiate_check_run(req) {
     date.toISOString(); //"2011-12-19T15:28:46.493Z"
     let completed_at = date;
 
-    const test = new UITest("Amaan was here")
-    const result = await test.start()
+    const test = new UITest('Amaan was here');
+    const result = await test.start();
 
-    switch(result) {
-        case "differences":
-            console.log("differences"); 
+    switch (result) {
+        case 'differences':
+            console.log('differences');
             break;
-        case "no differences":
+        case 'no differences':
             console.log('no differences');
-            break
-        default: 
-            console.log('Not match')
-    }  
-
-
+            break;
+        default:
+            console.log('Not match');
+    }
 
     app.checks.update({
         owner,

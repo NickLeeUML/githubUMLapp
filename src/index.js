@@ -1,18 +1,17 @@
-const express = require('express');
-const octokitRequest = require('@octokit/rest');
-const { request } = require('@octokit/request');
-const jsonwebtoken = require('jsonwebtoken');
-const bodyParser = require('body-parser');
-const chalk = require('chalk');
-const util = require('util');
-const fs = require('fs');
+import express from 'express';
+import octokitRequest from '@octokit/rest';
+import { request } from '@octokit/request';
+import jsonwebtoken from 'jsonwebtoken';
+import bodyParser from 'body-parser';
+import chalk from 'chalk';
+import util from 'util';
+import fs from 'fs';
 require('dotenv').config();
 
-import "@babel/polyfill";
+import '@babel/polyfill';
 
-
-const { InstallationAccessTokenPromise } = require('./auth.js');
-const { initiate_check_run, create_check_run } = require('./helper.js');
+import { InstallationAccessTokenPromise } from './auth.js';
+import { initiate_check_run, create_check_run } from './helper.js';
 
 const app = express();
 const port = 3000;

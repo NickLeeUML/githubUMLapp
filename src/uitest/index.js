@@ -1,18 +1,11 @@
-// import webdriver from 'selenium-webdriver';
-// import { SeleniumServer } from 'selenium-webdriver/remote';
-// import request from 'request';
+import webdriver from 'selenium-webdriver';
+import { SeleniumServer } from 'selenium-webdriver/remote';
+import request from 'request';
+import "@babel/polyfill";
 
-// import { myUMLPopup_Selenium, solutionCenterWebsite_Selenium} from './selenium/index.js'
+import { myUMLPopup_Selenium, solutionCenterWebsite_Selenium} from './selenium/index.js'
+import selenium from './selenium/index.js'
 
-
-const webdriver = require('selenium-webdriver');
-const { SeleniumServer } = require('selenium-webdriver/remote')
-const request = require('request')
-
-const selenium = require('./selenium/index.js')
-
-
-//const {By, Key, until } = require("selenium-webdriver")
 
 
 // export default class UITest {
@@ -58,8 +51,8 @@ function processScripts(){
             record_video : 'true',
             record_network : 'false',
             browserName : 'Chrome',
-            username : "",
-            password : ""
+            username : "weboffice@uml.edu",
+            password : "u3dc95a2dfe9347a"
         };
     
         const driver = new webdriver.Builder()

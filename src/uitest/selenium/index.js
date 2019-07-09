@@ -1,7 +1,6 @@
-// import { By, Key, until } from "selenium-webdriver"
-
-const {By, Key, until } = require("selenium-webdriver")
-const fs = require('fs')
+import { By, Key, until } from "selenium-webdriver"
+import fs from 'fs'
+import "@babel/polyfill";
 
  async function myUMLPopupTest_Selenium(driver){
     return new Promise(async (resolve,reject) => {
