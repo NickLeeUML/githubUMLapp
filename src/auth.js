@@ -3,8 +3,9 @@ import { App }  from '@octokit/app'; // used to get auth tokens for use with, av
 import octokitRequest  from '@octokit/rest';
 import jsonwebtoken  from 'jsonwebtoken';
 import "@babel/polyfill";
+import dotenv from 'dotenv';
+dotenv.config();
 
-require('dotenv').config();
 import fs from'fs';
 import https from'https';
 

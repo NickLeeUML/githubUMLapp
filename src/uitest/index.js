@@ -6,24 +6,18 @@ import "@babel/polyfill";
 import { myUMLPopup_Selenium, solutionCenterWebsite_Selenium} from './selenium/index.js'
 import selenium from './selenium/index.js'
 
+import dotenv from 'dotenv';
+dotenv.config();
 
+export default class UITest {
+    constructor(url) {
+        this.remoteHub = "http://hub.crossbrowsertesting.com:80/wd/hub'";
+    }
 
-// export default class UITest {
-//     constructor(url) {
-//         this.remoteHub = "http://hub.crossbrowsertesting.com:80/wd/hub'";
-//     }
+    start() {
 
-//     // start() {
-
-//     //     const tasks = [myUMLPopup_Selenium, solutionCenterWebsite_Selenium];
-
-//     //     tasks.reduce((results, currentFunc)=>{
-//     //         await currentFunc()
-//     //     }, )
-
-
-//     // }
-// }
+    }
+}
 
 var scripts = [selenium.myUMLPopupTest_Selenium, selenium.solutionCenterWebsiteTest_Selenium]
 
@@ -38,7 +32,6 @@ function methodThatReturnsAPromise(seleniumFunction,driver) {
   
 function processScripts(){
     
-
     scripts.reduce( async (accum, func) =>{
         await accum;
 
@@ -51,8 +44,8 @@ function processScripts(){
             record_video : 'true',
             record_network : 'false',
             browserName : 'Chrome',
-            username : "weboffice@uml.edu",
-            password : "u3dc95a2dfe9347a"
+            username : process.env.CBT_USER_NAME,
+            password : process.env.CBT_AUTHKEY
         };
     
         const driver = new webdriver.Builder()
@@ -66,7 +59,7 @@ function processScripts(){
 
 }
 
-  processScripts()
+  //processScripts()
 
 
 webdriver.WebDriver.prototype.takeSnapshot = function() {

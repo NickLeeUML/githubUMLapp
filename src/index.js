@@ -6,7 +6,8 @@ import bodyParser from 'body-parser';
 import chalk from 'chalk';
 import util from 'util';
 import fs from 'fs';
-require('dotenv').config();
+import dotenv from 'dotenv';
+dotenv.config();
 
 import '@babel/polyfill';
 
