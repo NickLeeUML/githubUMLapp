@@ -1,10 +1,13 @@
-const express = require('express');
-const { App } = require('@octokit/app'); // used to get auth tokens for use with, avoids having to use 'jsonwebtoken'
-const octokitRequest = require('@octokit/rest');
-const jsonwebtoken = require('jsonwebtoken');
-require('dotenv').config();
-var fs = require('fs');
-const https = require('https');
+import express  from 'express';
+import { App }  from '@octokit/app'; // used to get auth tokens for use with, avoids having to use 'jsonwebtoken'
+import octokitRequest  from '@octokit/rest';
+import jsonwebtoken  from 'jsonwebtoken';
+import "@babel/polyfill";
+import dotenv from 'dotenv';
+dotenv.config();
+
+import fs from'fs';
+import https from'https';
 
 const PEM = fs.readFileSync('./umlapp.2019-06-11.private-key.pem', 'utf8');
 const ISSUER_ID = process.env.GITHUB_APP_IDENTIFIER;
