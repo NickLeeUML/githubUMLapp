@@ -48,7 +48,7 @@ import "@babel/polyfill";
 
             resolve(text)
         } catch(error){
-            console.error(error)
+            console.error("solutionCenterWebsiteTest_Selenium CAUGHT ERROR TIMEOUT:",error)
             reject(error)
         } finally {
             //await driver.showSnapshots()

@@ -2,9 +2,7 @@ import azure from 'azure-storge';
 import '@babel/polyfill';
 
 if (process.env.NODE_ENV !== 'production') {
-    
-    import dotenv from 'dotenv';
-    dotenv.config();
+    require('dotenv').config();
 }
 
 const queueSvc = azure.createQueueService();
