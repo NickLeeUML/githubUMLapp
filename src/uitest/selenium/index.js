@@ -15,12 +15,10 @@ async function myUMLPopupTest_Selenium(driver) {
             console.log('button:', button);
             await button.click();
 
-            await driver.takeScreenshot().then(async (image, err) => {
-                const result = await fs.writeFile('screenshotimage.png', image, 'base64', function(err) {
-                    if (err) {
-                        throw err;
-                    }
-                });
+            await driver.takeScreenshot().then( async (image, err) => {
+                const result = await fs.writeFile('screenshotimage.png', image, 'base64', function(err){
+                    if(err){ throw err}
+                } );            
             });
 
             const link = await driver.findElement(By.xpath('//*[@id="form"]/div[3]/div[4]/div/div/div/h1'));
@@ -56,8 +54,8 @@ async function solutionCenterWebsiteTest_Selenium(driver) {
             const firstResult = await driver.findElement(
                 By.xpath('/html/body/div[1]/uml-app-knowledge-base/div[2]/div/div/div/div/div[1]/div/div/div[3]/div[1]/div[1]/a/span')
             );
-            const session = await driver.getSession();
-            await driver.takeSnapshot(session.id_);
+            const session = await driver.getSession()
+             await driver.takeSnapshot(session.id_);
             const text = await firstResult.getText();
             console.log(text);
             resolve(text);
