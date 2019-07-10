@@ -34,7 +34,7 @@ import "@babel/polyfill";
     return new Promise( async (resolve, reject)=>{
 
         try {
-            await driver.get("https://stage.uml.edu/help/thesolutioncenter/?query=&section=website")
+            await driver.get("https://www.uml.edu/help/thesolutioncenter/search&section=website")
             const searchField = await driver.findElement(By.xpath('/html/body/div[1]/uml-app-knowledge-base/div[1]/div[3]/div/div/div[2]/div/div[1]/div[1]/span/label/div[2]/div/input'))
             await searchField.sendKeys('bill')
             await searchField.sendKeys(Key.ENTER)
@@ -44,8 +44,7 @@ import "@babel/polyfill";
             //this could probably be one function 
             const firstResult = await driver.findElement(By.xpath('/html/body/div[1]/uml-app-knowledge-base/div[2]/div/div/div/div/div[1]/div/div/div[3]/div[1]/div[1]/a/span'))
             const text = await firstResult.getText()
-            console.log("from selenium func", text)
-
+            console.log(text)
             resolve(text)
         } catch(error){
             console.error("solutionCenterWebsiteTest_Selenium CAUGHT ERROR TIMEOUT:",error)

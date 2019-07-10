@@ -118,7 +118,7 @@ function processScripts(cap) {
             await accum;
 
             const caps = {
-                name: `${cap.browserName} ${cap.platform} ${func.name}`,   // Name for Crossbrowser test
+                name: `${cap.browserName} ${cap.platform} ${func.name}`, // Name for Crossbrowser test
                 build: '1.0',
                 version: cap.version,
                 platform: cap.platform,
@@ -127,23 +127,30 @@ function processScripts(cap) {
                 record_network: 'false',
                 browserName: cap.browserName,
                 username: process.env.CBT_USER_NAME,
-                password: process.env.CBT_AUTHKEY
+                password: process.env.CBT_AUTHKEY,
             };
 
             const driver = new webdriver.Builder()
-                .usingServer("http://hub.crossbrowsertesting.com:80/wd/hub")
+                .usingServer('http://hub.crossbrowsertesting.com:80/wd/hub')
                 .withCapabilities(caps)
-                .build()
-            driver.manage().window().setRect({ width: 1200, height: 600 })
+                .build();
+            await driver
+                .manage()
+                .window()
+                .setRect({ width: 1200, height: 600 });
 
-            return methodThatReturnsAPromise(func, driver).catch((e) => { console.error(e); })
-        }, Promise.resolve())
+            return methodThatReturnsAPromise(func, driver).catch((e) => {
+                console.error(e);
+            });
+        }, Promise.resolve());
 
-        result.then(e => {
-            if (e) { reject(e) }
-            resolve() // with message?
-        })
-    })
+        result.then((e) => {
+            if (e) {
+                reject(e);
+            }
+            resolve(); // with message?
+        });
+    });
 }
 
 webdriver.WebDriver.prototype.takeSnapshot = function() {
