@@ -75,4 +75,32 @@ async function processScripts() {
     solutionCenterWebsiteTest_Selenium(driver);
 }
 
+webdriver.WebDriver.prototype.takeSnapshot = function(sessionId) {
+    return new Promise((resolve, fulfill) => {
+        var result = { error: false, message: null };
+
+        if (sessionId) {
+            request
+                .post('https://crossbrowsertesting.com/api/v3/selenium/' + sessionId + '/snapshots', function(error, response, body) {
+                    if (error) {
+                        result.error = true;
+                        result.message = error;
+                    } else if (response.statusCode !== 200) {
+                        result.error = true;
+                        result.message = body;
+                    } else {
+                        result.error = false;
+                        result.message = 'success';
+                    }
+                })
+                .auth(process.env.CBT_USER_NAME, process.env.CBT_AUTHKEY);
+        } else {
+            result.error = true;
+            result.message = 'Session Id was not defined';
+        }
+
+        result.error ? fulfill('Fail') : resolve('Pass'); //never call reject as we don't need this to actually stop the test
+    });
+};
+
 processScripts();

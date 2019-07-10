@@ -153,32 +153,5 @@ function processScripts(cap) {
     });
 }
 
-webdriver.WebDriver.prototype.takeSnapshot = function() {
-    return new Promise((resolve, fulfill) => {
-        var result = { error: false, message: null };
-
-        if (sessionId) {
-            request
-                .post('https://crossbrowsertesting.com/api/v3/selenium/' + sessionId + '/snapshots', function(error, response, body) {
-                    if (error) {
-                        result.error = true;
-                        result.message = error;
-                    } else if (response.statusCode !== 200) {
-                        result.error = true;
-                        result.message = body;
-                    } else {
-                        result.error = false;
-                        result.message = 'success';
-                    }
-                })
-                .auth(username, authkey);
-        } else {
-            result.error = true;
-            result.message = 'Session Id was not defined';
-        }
-        result.error ? fulfill('Fail') : resolve('Pass'); //never call reject as we don't need this to actually stop the test
-    });
-};
-
 const test = new UITest();
 test.start();

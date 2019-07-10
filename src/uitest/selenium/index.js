@@ -1,6 +1,10 @@
 import { By, Key, until } from 'selenium-webdriver';
 import fs from 'fs';
+import request from 'request-promise';
 import '@babel/polyfill';
+
+import dotenv from 'dotenv';
+dotenv.config();
 
 async function myUMLPopupTest_Selenium(driver) {
     return new Promise(async (resolve, reject) => {
@@ -10,13 +14,15 @@ async function myUMLPopupTest_Selenium(driver) {
             const button = await driver.findElement(By.xpath('//*[@id="form"]/header/div/div[2]/nav/ul/li[4]'));
             console.log('button:', button);
             await button.click();
+
             await driver.takeScreenshot().then(async (image, err) => {
-                const result = await fs.writeFile('!myUMLPopup.png', image, 'base64', function(err) {
+                const result = await fs.writeFile('screenshotimage.png', image, 'base64', function(err) {
                     if (err) {
                         throw err;
                     }
                 });
             });
+
             const link = await driver.findElement(By.xpath('//*[@id="form"]/div[3]/div[4]/div/div/div/h1'));
             const text = await link.getText();
             //potentially want to click on links to navigate to new page
@@ -50,6 +56,8 @@ async function solutionCenterWebsiteTest_Selenium(driver) {
             const firstResult = await driver.findElement(
                 By.xpath('/html/body/div[1]/uml-app-knowledge-base/div[2]/div/div/div/div/div[1]/div/div/div[3]/div[1]/div[1]/a/span')
             );
+            const session = await driver.getSession();
+            await driver.takeSnapshot(session.id_);
             const text = await firstResult.getText();
             console.log(text);
             resolve(text);
