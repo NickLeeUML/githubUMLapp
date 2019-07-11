@@ -93,6 +93,7 @@ webdriver.WebDriver.prototype.takeSnapshot = function(sessionId) {
                         result.error = false;
                         result.message = 'success';
                     }
+                    body = JSON.parse(body)
                     const imageURL = body.image;
                     const imageObj = {url:imageURL,variant:'windows10edge',target:'pc',component:'wholepage',height:768,width:1366}
                     const imageArray = [imageObj]

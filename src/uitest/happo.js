@@ -16,7 +16,7 @@ export const getReportStatus = async function(reportId = 'dev-35e526eca7fa4803d7
         },
     };
     request.get(options).then(console.log);
-};
+}; 
 
 export const createReport = async function(sha, imageURLSArray) {
     //where :sha is unique id usually commit
@@ -26,13 +26,14 @@ export const createReport = async function(sha, imageURLSArray) {
         message: 'first image upload',
     };
 
-    return new Promise((resovle, reject) => {
+    return new Promise((resolve, reject) => {
         const options = {
             url: `https://happo.io/api/reports/${sha}`,
             headers: {
                 Authorization: `Basic ${token}`,
             },
             body: body,
+            json: true
         };
         request
             .post(options)
