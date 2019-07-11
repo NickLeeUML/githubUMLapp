@@ -6,33 +6,26 @@ import '@babel/polyfill';
 import dotenv from 'dotenv';
 dotenv.config();
 
-import  { uploadImage, getBlobUrl, takeUIPicture } from '../../azure/blobservice';
-
-
+import { uploadImage, getBlobUrl, takeUIPicture } from '../../azure/blobservice';
+import { createReport } from '../happo.js';
 
 async function myUMLPopupTest_Selenium(driver) {
     return new Promise(async (resolve, reject) => {
         try {
+            const snapshots = [];
             await driver.get('https://stage.uml.edu/Student-Life/');
+            let imagedata = await takeUIPicture(driver, 'beforeclick');
+            snapshots.push(imagedata);
 
             const button = await driver.findElement(By.xpath('//*[@id="form"]/header/div/div[2]/nav/ul/li[4]'));
             await button.click();
 
-            await takeUIPicture(driver,'anotherpicture')
-            //should put this in one function 
-            // const data = await driver.takeScreenshot();
-            // let buff = new Buffer(data, 'base64');  
+            imagedata = await takeUIPicture(driver, 'afterclick');
+            snapshots.push(imagedata);
+            await createReport('GHI456', snapshots);
 
-            // const result = await fs.writeFile('screenshotimage1png', data, 'base64', function(err){
-            //             if(err){ throw err}
-            //         } ); 
-            // await uploadImage('mytest',buff);
-            // console.log(getBlobUrl('screenshots', 'mytest'))
-
-            const link = await driver.findElement(By.xpath('//*[@id="form"]/div[3]/div[4]/div/div/div/h1'));
-            const text = await link.getText();
             //potentially want to click on links to navigate to new page
-            resolve(text);
+            resolve('complete');
         } catch (error) {
             reject(error);
         } finally {
@@ -62,8 +55,8 @@ async function solutionCenterWebsiteTest_Selenium(driver) {
             const firstResult = await driver.findElement(
                 By.xpath('/html/body/div[1]/uml-app-knowledge-base/div[2]/div/div/div/div/div[1]/div/div/div[3]/div[1]/div[1]/a/span')
             );
-            const session = await driver.getSession()
-             await driver.takeSnapshot(session.id_);
+            const session = await driver.getSession();
+            await driver.takeSnapshot(session.id_);
             const text = await firstResult.getText();
             console.log(text);
             resolve(text);
@@ -82,9 +75,8 @@ module.exports = {
     solutionCenterWebsiteTest_Selenium: solutionCenterWebsiteTest_Selenium,
 };
 
-
 // await driver.takeScreenshot().then( async (image, err) => {
 //     const result = await fs.writeFile('screenshotimage.png', image, 'base64', function(err){
 //         if(err){ throw err}
-//     } );            
+//     } );
 // });

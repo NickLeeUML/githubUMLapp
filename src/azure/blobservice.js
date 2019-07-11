@@ -1,7 +1,7 @@
 import '@babel/polyfill';
 const azure = require('azure-storage');
 const { Aborter, BlobURL, BlockBlobURL, ContainerURL, ServiceURL, SharedKeyCredential, StorageURL, uploadStreamToBlockBlob } = require('@azure/storage-blob');
-import sizeof from 'image-size';
+import sizeOf from 'image-size';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -64,7 +64,7 @@ export function getBlobUrl(containerName, blobName) {
     return blobService.getUrl(containerName, blobName);
 }
 
-export function takeUIPicture(driver, name) {
+export function takeUIPictureSendReport(driver, name) {
     return new Promise(async (resolve, reject) => {
         try {
             const data = await driver.takeScreenshot();
@@ -81,4 +81,23 @@ export function takeUIPicture(driver, name) {
             reject(err);
         }
     });
+}
+
+export function takeUIPicture(driver, name) {
+    return new Promise(async (resolve, reject) => {
+        try {
+
+            const data = await driver.takeScreenshot();
+            const buff = new Buffer(data, 'base64');
+            const size = sizeOf(buff);
+            await uploadImage(name, buff);
+            const url = await blobService.getUrl('screenshots', name);
+            const imageObj = { url: url, variant: 'firefox', target: 'pc', component: `wholepage${name}`, height: size.height, width: size.width };
+            resolve(imageObj)
+        } catch (err) {
+
+            reject(err)
+        }
+
+    })
 }
