@@ -5,7 +5,7 @@ import request from 'request';
 
 import { myUMLPopupTest_Selenium, solutionCenterWebsiteTest_Selenium } from './selenium/index.js';
 import selenium from './selenium/index.js';
-import {createReport} from './happo.js';
+import { create_Happo_Report } from './happo.js';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -51,14 +51,14 @@ const variations = {
 
 async function processScripts() {
     const caps = {
-        name: `${variations.windows10Edge.browserName} ${variations.windows10Edge.platform}`,
+        name: `${variations.osxFirefox.browserName} ${variations.osxFirefox.platform}`,
         build: '1.0',
-        version: variations.windows10Edge.version,
-        platform: variations.windows10Edge.platform,
+        version: variations.osxFirefox.version,
+        platform: variations.osxFirefox.platform,
         screen_resolution: '1366x768',
         record_video: 'true',
         record_network: 'false',
-        browserName: variations.windows10Edge.browserName,
+        browserName: variations.osxFirefox.browserName,
         username: process.env.CBT_USER_NAME,
         password: process.env.CBT_AUTHKEY,
     };
@@ -73,7 +73,7 @@ async function processScripts() {
         .window()
         .setRect({ width: 1200, height: 600 });
 
-    solutionCenterWebsiteTest_Selenium(driver);
+    myUMLPopupTest_Selenium(driver);
 }
 
 webdriver.WebDriver.prototype.takeSnapshot = function(sessionId) {
@@ -93,12 +93,11 @@ webdriver.WebDriver.prototype.takeSnapshot = function(sessionId) {
                         result.error = false;
                         result.message = 'success';
                     }
-                    body = JSON.parse(body)
+                    body = JSON.parse(body);
                     const imageURL = body.image;
-                    const imageObj = {url:imageURL,variant:'windows10edge',target:'pc',component:'wholepage',height:768,width:1366}
-                    const imageArray = [imageObj]
-                    await createReport('123abc',imageArray)
-
+                    const imageObj = { url: imageURL, variant: 'windows10edge', target: 'pc', component: 'wholepage', height: 768, width: 1366 };
+                    const imageArray = [imageObj];
+                    await create_Happo_Report('123abc', imageArray);
                 })
                 .auth(process.env.CBT_USER_NAME, process.env.CBT_AUTHKEY);
         } else {

@@ -6,25 +6,26 @@ import '@babel/polyfill';
 import dotenv from 'dotenv';
 dotenv.config();
 
+import { uploadImage, getBlobUrl, takeUIPicture } from '../../azure/blobservice';
+import { create_Happo_Report } from '../happo.js';
+
 async function myUMLPopupTest_Selenium(driver) {
     return new Promise(async (resolve, reject) => {
         try {
+            const snapshots = [];
             await driver.get('https://stage.uml.edu/Student-Life/');
+            let imagedata = await takeUIPicture(driver, 'beforeclick');
+            snapshots.push(imagedata);
 
             const button = await driver.findElement(By.xpath('//*[@id="form"]/header/div/div[2]/nav/ul/li[4]'));
-            console.log('button:', button);
             await button.click();
 
-            await driver.takeScreenshot().then( async (image, err) => {
-                const result = await fs.writeFile('screenshotimage.png', image, 'base64', function(err){
-                    if(err){ throw err}
-                } );            
-            });
+            imagedata = await takeUIPicture(driver, 'afterclick');
+            snapshots.push(imagedata);
+            await create_Happo_Report('GHI456', snapshots);
 
-            const link = await driver.findElement(By.xpath('//*[@id="form"]/div[3]/div[4]/div/div/div/h1'));
-            const text = await link.getText();
             //potentially want to click on links to navigate to new page
-            resolve(text);
+            resolve('complete');
         } catch (error) {
             reject(error);
         } finally {
@@ -54,8 +55,8 @@ async function solutionCenterWebsiteTest_Selenium(driver) {
             const firstResult = await driver.findElement(
                 By.xpath('/html/body/div[1]/uml-app-knowledge-base/div[2]/div/div/div/div/div[1]/div/div/div[3]/div[1]/div[1]/a/span')
             );
-            const session = await driver.getSession()
-             await driver.takeSnapshot(session.id_);
+            const session = await driver.getSession();
+            await driver.takeSnapshot(session.id_);
             const text = await firstResult.getText();
             console.log(text);
             resolve(text);
@@ -73,3 +74,9 @@ module.exports = {
     myUMLPopupTest_Selenium: myUMLPopupTest_Selenium,
     solutionCenterWebsiteTest_Selenium: solutionCenterWebsiteTest_Selenium,
 };
+
+// await driver.takeScreenshot().then( async (image, err) => {
+//     const result = await fs.writeFile('screenshotimage.png', image, 'base64', function(err){
+//         if(err){ throw err}
+//     } );
+// });

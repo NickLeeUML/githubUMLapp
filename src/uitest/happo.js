@@ -18,7 +18,7 @@ export const getReportStatus = async function(reportId = 'dev-35e526eca7fa4803d7
     request.get(options).then(console.log);
 }; 
 
-export const createReport = async function(sha, imageURLSArray) {
+export const create_Happo_Report = async function(sha, imageURLSArray) {
     //where :sha is unique id usually commit
 
     let body = {
