@@ -9,7 +9,7 @@ import selenium from './selenium/index.js';
 import dotenv from 'dotenv';
 dotenv.config();
 
-const scripts = [selenium.myUMLPopupTest_Selenium, selenium.solutionCenterWebsiteTest_Selenium];
+const selenium_scripts = [selenium.myUMLPopupTest_Selenium, selenium.solutionCenterWebsiteTest_Selenium];
 
 export default class UITest {
     constructor(url) {
@@ -114,7 +114,7 @@ function methodThatReturnsAPromise(seleniumFunction, driver) {
 
 function processScripts(cap) {
     return new Promise((resolve, reject) => {
-        let result = scripts.reduce(async (accum, func) => {
+        let result = selenium_scripts.reduce(async (accum, func) => {
             await accum;
 
             const caps = {

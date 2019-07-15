@@ -7,7 +7,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 import { uploadImage, getBlobUrl, takeUIPicture } from '../../azure/blobservice';
-import { createReport } from '../happo.js';
+import { create_Happo_Report } from '../happo.js';
 
 async function myUMLPopupTest_Selenium(driver) {
     return new Promise(async (resolve, reject) => {
@@ -22,7 +22,7 @@ async function myUMLPopupTest_Selenium(driver) {
 
             imagedata = await takeUIPicture(driver, 'afterclick');
             snapshots.push(imagedata);
-            await createReport('GHI456', snapshots);
+            await create_Happo_Report('GHI456', snapshots);
 
             //potentially want to click on links to navigate to new page
             resolve('complete');

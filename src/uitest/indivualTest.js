@@ -5,7 +5,7 @@ import request from 'request';
 
 import { myUMLPopupTest_Selenium, solutionCenterWebsiteTest_Selenium } from './selenium/index.js';
 import selenium from './selenium/index.js';
-import { createReport } from './happo.js';
+import { create_Happo_Report } from './happo.js';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -97,7 +97,7 @@ webdriver.WebDriver.prototype.takeSnapshot = function(sessionId) {
                     const imageURL = body.image;
                     const imageObj = { url: imageURL, variant: 'windows10edge', target: 'pc', component: 'wholepage', height: 768, width: 1366 };
                     const imageArray = [imageObj];
-                    await createReport('123abc', imageArray);
+                    await create_Happo_Report('123abc', imageArray);
                 })
                 .auth(process.env.CBT_USER_NAME, process.env.CBT_AUTHKEY);
         } else {

@@ -9,7 +9,7 @@ dotenv.config();
 const fs = require('fs');
 const path = require('path');
 
-import { createReport } from '../uitest/happo.js';
+import { create_Happo_Report } from '../uitest/happo.js';
 
 const AZURE_STORAGE_ACCOUNT = process.env.AZURE_STORAGE_ACCOUNT;
 const AZURE_STORAGE_ACCESS_KEY = process.env.AZURE_STORAGE_ACCESS_KEY;
@@ -74,7 +74,7 @@ export function takeUIPictureSendReport(driver, name) {
             const url = await blobService.getUrl('screenshots', name);
             const imageObj = { url: url, variant: 'firefox', target: 'pc', component: 'wholepage', height: size.height, width: size.width };
             const imageArray = [imageObj];
-            await createReport('def456', imageArray);
+            await create_Happo_Report('def456', imageArray);
             resolve('done');
         } catch (err) {
             console.log('error in take ui picture: ', err);
