@@ -83,7 +83,7 @@ export default class UITest {
             //current is data for pass to functio
             await accum;
 
-            return processScripts(current,this.hash);
+            return processScripts(current, this.hash);
         }, Promise.resolve());
 
         results.then((e) => {
@@ -101,9 +101,9 @@ export default class UITest {
     };
 }
 
-function methodThatReturnsAPromise(seleniumFunction, driver,capability,hash) {
+function methodThatReturnsAPromise(seleniumFunction, driver, capability, hash) {
     return new Promise(async (resolve, reject) => {
-        let value = await seleniumFunction.call(capability,driver, hash).catch((e) => {
+        let value = await seleniumFunction.call(capability, driver, hash).catch((e) => {
             console.log('returned promise error :', e);
             reject(e);
         });
@@ -112,7 +112,7 @@ function methodThatReturnsAPromise(seleniumFunction, driver,capability,hash) {
     });
 }
 
-function processScripts(capability,hash) {
+function processScripts(capability, hash) {
     return new Promise((resolve, reject) => {
         let result = selenium_scripts.reduce(async (accum, func) => {
             await accum;
@@ -139,14 +139,21 @@ function processScripts(capability,hash) {
                 .window()
                 .setRect({ width: 1200, height: 600 });
 
-            return methodThatReturnsAPromise(func, driver,capability,hash).catch((e) => {
+            return methodThatReturnsAPromise(func, driver, capability, hash).catch((e) => {
                 console.error(e);
             });
         }, Promise.resolve());
 
-        result.then(value => { resolve(value)}, reason => {reject(reason)} )
+        result.then(
+            (value) => {
+                resolve(value);
+            },
+            (reason) => {
+                reject(reason);
+            }
+        );
     });
 }
 
-const test = new UITest();
+const test = new UITest('sha123abc');
 test.start();

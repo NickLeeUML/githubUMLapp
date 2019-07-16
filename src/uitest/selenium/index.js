@@ -9,20 +9,20 @@ dotenv.config();
 import { uploadImage, getBlobUrl, takeUIPicture } from '../../azure/blobservice';
 import { create_Happo_Report } from '../happo.js';
 
-async function myUMLPopupTest_Selenium(driver,hash) {
+async function myUMLPopupTest_Selenium(driver, hash) {
     return new Promise(async (resolve, reject) => {
         try {
             const snapshots = [];
             await driver.get('https://stage.uml.edu/Student-Life/');
-            //let imagedata = await takeUIPicture(driver, 'beforeclick');
-            //snapshots.push(imagedata);
+            // let imagedata = await takeUIPicture(driver, 'beforeclick');
+            // snapshots.push(imagedata);
 
             const button = await driver.findElement(By.xpath('//*[@id="form"]/header/div/div[2]/nav/ul/li[4]'));
             await button.click();
 
-            //imagedata = await takeUIPicture(driver, 'afterclick');
-            //snapshots.push(imagedata);
-            //await create_Happo_Report('GHI456b', snapshots);
+            // imagedata = await takeUIPicture(driver, 'afterclick');
+            // snapshots.push(imagedata);
+            // await create_Happo_Report(hash, snapshots);
 
             //potentially want to click on links to navigate to new page
             resolve('complete');

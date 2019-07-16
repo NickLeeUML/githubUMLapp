@@ -32,9 +32,7 @@ function base64_encode(file) {
     blobName: String(), 'SHA-1/Windows10/MicrosoftEdge18/uml.edu.studentlife/beforelick.png' 
     data: base 64 buffer
 
-
 */
-
 
 export async function uploadImage(blobName, data) {
     return new Promise((resolve, reject) => {
