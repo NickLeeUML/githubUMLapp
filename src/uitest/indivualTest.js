@@ -97,7 +97,7 @@ webdriver.WebDriver.prototype.takeSnapshot = function(sessionId) {
                     const imageURL = body.image;
                     const imageObj = { url: imageURL, variant: 'windows10edge', target: 'pc', component: 'wholepage', height: 768, width: 1366 };
                     const imageArray = [imageObj];
-                    await create_Happo_Report('123abc', imageArray);
+                    await create_Happo_Report('july15', imageArray);
                 })
                 .auth(process.env.CBT_USER_NAME, process.env.CBT_AUTHKEY);
         } else {
