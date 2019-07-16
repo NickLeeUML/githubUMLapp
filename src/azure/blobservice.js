@@ -23,11 +23,18 @@ const ONE_MINUTE = 60 * 1000;
 const blobService = azure.createBlobService(AZURE_STORAGE_ACCOUNT, AZURE_STORAGE_ACCESS_KEY);
 
 function base64_encode(file) {
-    // read binary data
     var bitmap = fs.readFileSync(file);
-    // convert binary data to base64 encoded string
     return new Buffer(bitmap).toString('base64');
 }
+/*
+    uploadImage(blobName, data)
+    
+    blobName: String(), 'SHA-1/Windows10/MicrosoftEdge18/uml.edu.studentlife/beforelick.png' 
+    data: base 64 buffer
+
+
+*/
+
 
 export async function uploadImage(blobName, data) {
     return new Promise((resolve, reject) => {
@@ -47,18 +54,6 @@ export async function uploadImage(blobName, data) {
         });
     });
 }
-
-const uploadString = async (containerName, blobName, text) => {
-    return new Promise((resolve, reject) => {
-        blobService.createBlockBlobFromText(containerName, blobName, text, (err) => {
-            if (err) {
-                reject(err);
-            } else {
-                resolve({ message: `Text "${text}" is written to blob storage` });
-            }
-        });
-    });
-};
 
 export function getBlobUrl(containerName, blobName) {
     return blobService.getUrl(containerName, blobName);
@@ -89,8 +84,8 @@ export function takeUIPicture(driver, name) {
             const data = await driver.takeScreenshot();
             const buff = new Buffer(data, 'base64');
             const size = sizeOf(buff);
-            await uploadImage(name, buff);
-            const url = await blobService.getUrl('screenshots', name);
+            await uploadImage(`${name}b`, buff);
+            const url = await blobService.getUrl('screenshots', `${name}b`);
             const imageObj = { url: url, variant: 'firefox', target: 'pc', component: `wholepage${name}`, height: size.height, width: size.width };
             resolve(imageObj);
         } catch (err) {

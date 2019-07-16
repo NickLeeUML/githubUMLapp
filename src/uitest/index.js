@@ -3,16 +3,16 @@ import webdriver from 'selenium-webdriver';
 import { SeleniumServer } from 'selenium-webdriver/remote';
 import request from 'request';
 
-import { myUMLPopup_Selenium, solutionCenterWebsite_Selenium } from './selenium/index.js';
-import selenium from './selenium/index.js';
+import { myUMLPopupTest_Selenium, solutionCenterWebsiteTest_Selenium } from './selenium/index.js';
 
 import dotenv from 'dotenv';
 dotenv.config();
 
-const selenium_scripts = [selenium.myUMLPopupTest_Selenium, selenium.solutionCenterWebsiteTest_Selenium];
+const selenium_scripts = [myUMLPopupTest_Selenium];
 
 export default class UITest {
-    constructor(url) {
+    constructor(hash) {
+        this.hash = hash;
         this.status = {
             running: false,
             error: false,
@@ -83,7 +83,7 @@ export default class UITest {
             //current is data for pass to functio
             await accum;
 
-            return processScripts(current);
+            return processScripts(current,this.hash);
         }, Promise.resolve());
 
         results.then((e) => {
@@ -101,31 +101,31 @@ export default class UITest {
     };
 }
 
-function methodThatReturnsAPromise(seleniumFunction, driver) {
+function methodThatReturnsAPromise(seleniumFunction, driver,capability,hash) {
     return new Promise(async (resolve, reject) => {
-        let value = await seleniumFunction(driver).catch((e) => {
-            console.log('returs promise error :', e);
+        let value = await seleniumFunction.call(capability,driver, hash).catch((e) => {
+            console.log('returned promise error :', e);
             reject(e);
         });
-        console.log('method that returns value: ', e);
+        console.log('method that returns value: ', value);
         resolve(value);
     });
 }
 
-function processScripts(cap) {
+function processScripts(capability,hash) {
     return new Promise((resolve, reject) => {
         let result = selenium_scripts.reduce(async (accum, func) => {
             await accum;
 
             const caps = {
-                name: `${cap.browserName} ${cap.platform} ${func.name}`, // Name for Crossbrowser test
+                name: `${capability.browserName} ${capability.platform} ${func.name}`, // Name for Crossbrowser test
                 build: '1.0',
-                version: cap.version,
-                platform: cap.platform,
+                version: capability.version,
+                platform: capability.platform,
                 screen_resolution: '1366x768',
                 record_video: 'true',
                 record_network: 'false',
-                browserName: cap.browserName,
+                browserName: capability.browserName,
                 username: process.env.CBT_USER_NAME,
                 password: process.env.CBT_AUTHKEY,
             };
@@ -139,17 +139,12 @@ function processScripts(cap) {
                 .window()
                 .setRect({ width: 1200, height: 600 });
 
-            return methodThatReturnsAPromise(func, driver).catch((e) => {
+            return methodThatReturnsAPromise(func, driver,capability,hash).catch((e) => {
                 console.error(e);
             });
         }, Promise.resolve());
 
-        result.then((e) => {
-            if (e) {
-                reject(e);
-            }
-            resolve(); // with message?
-        });
+        result.then(value => { resolve(value)}, reason => {reject(reason)} )
     });
 }
 
