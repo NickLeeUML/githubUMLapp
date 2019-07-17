@@ -2,6 +2,7 @@ import '@babel/polyfill';
 const azure = require('azure-storage');
 const { Aborter, BlobURL, BlockBlobURL, ContainerURL, ServiceURL, SharedKeyCredential, StorageURL, uploadStreamToBlockBlob } = require('@azure/storage-blob');
 import sizeOf from 'image-size';
+import md5 from 'md5';
 
 import dotenv from 'dotenv';
 dotenv.config();
@@ -82,12 +83,58 @@ export function takeUIPicture(driver, name) {
             const data = await driver.takeScreenshot();
             const buff = new Buffer(data, 'base64');
             const size = sizeOf(buff);
-            await uploadImage(`${name}b`, buff);
-            const url = await blobService.getUrl('screenshots', `${name}b`);
-            const imageObj = { url: url, variant: 'firefox', target: 'pc', component: `wholepage${name}`, height: size.height, width: size.width };
-            resolve(imageObj);
+            const imageHash = md5(buff)
+            const exsits = await checkIfImageExists(imageHash)
+            if(exists) { //return url address
+              const url = await blobService.getUrl('screenshots', imageHash);
+              const imageObj = { url: url, variant: 'firefox', target: 'pc', component: `wholepage${name}`, height: size.height, width: size.width };
+              resolve(imageObj);
+
+            } else {  // upload new image, return url
+                await uploadImage(imageHash, buff);
+                const url = await blobService.getUrl('screenshots', imageHash);
+                const imageObj = { url: url, variant: 'firefox', target: 'pc', component: `wholepage${name}`, height: size.height, width: size.width };
+                resolve(imageObj);
+            }
+            
         } catch (err) {
             reject(err);
         }
     });
+}
+
+function checkIfUnique(buffer) { // data = buffer
+    const url = md5(buffer)
+    //const url = await blobService.getUrl('screenshots', name);
+}
+
+export function checkIfImageExists(url) {
+    return new Promise((resolve, reject) => {
+        // const buffer = new Buffer(bitmap).toString('base64');
+        // const url = md5(buffer);
+        blobService.doesBlobExist('screenshots', url, function (error, result) {
+            if (error) {
+                console.log(error)
+                reject(error)
+            } else {
+                resolve(result.exists)
+            }
+        })
+    })
+}
+
+export function checkIfImageExistsLocal() {
+    return new Promise((resolve, reject) => {
+        const bitmap = fs.readFileSync(path.join(__dirname + '../../../src/azure/testimage.png'));
+        const buffer = new Buffer(bitmap).toString('base64');
+        const url = md5(buffer);
+        blobService.doesBlobExist('screenshots', url, function (error, result) {
+            if (error) {
+                console.log(error)
+                reject(error)
+            } else {
+                resolve(result.exists)
+            }
+        })
+    })
 }

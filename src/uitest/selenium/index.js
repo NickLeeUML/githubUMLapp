@@ -14,7 +14,9 @@ async function myUMLPopupTest_Selenium(driver, hash) {
         try {
             const snapshots = [];
             await driver.get('https://stage.uml.edu/Student-Life/');
-            // let imagedata = await takeUIPicture(driver, 'beforeclick');
+            let imagedata = await takeUIPicture(driver, 'beforeclick');
+
+            
             // snapshots.push(imagedata);
 
             const button = await driver.findElement(By.xpath('//*[@id="form"]/header/div/div[2]/nav/ul/li[4]'));
