@@ -155,5 +155,5 @@ function processScripts(capability, hash) {
     });
 }
 
-const test = new UITest( );
+const test = new UITest("second-body ");
 test.start();

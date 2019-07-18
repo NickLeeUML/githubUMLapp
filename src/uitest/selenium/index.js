@@ -6,7 +6,7 @@ import '@babel/polyfill';
 import dotenv from 'dotenv';
 dotenv.config();
 
-import { uploadImage, getBlobUrl, takeUIPicture } from '../../azure/blobservice';
+import { uploadImage, getBlobUrl, takeUIPicture, fullPageScreenShot } from '../../azure/blobservice';
 import { create_Happo_Report } from '../happo.js';
 
 async function myUMLPopupTest_Selenium(capability, driver, gitHash) {
@@ -18,7 +18,8 @@ async function myUMLPopupTest_Selenium(capability, driver, gitHash) {
             const button = await driver.findElement(By.xpath('//*[@id="form"]/header/div/div[2]/nav/ul/li[4]'));
             await button.click();
             await driver.executeScript('var item = document.getElementsByClassName("layout-header__quick-links")[0]; item.style.border = "solid 3px pink";');
-            imagedata = await takeUIPicture(capability, driver, 'after click', gitHash, url);
+            //imagedata = await takeUIPicture(capability, driver, 'after click', gitHash, url);
+            await fullPageScreenShot(driver)
             resolve('complete');
         } catch (error) {
             reject(error);

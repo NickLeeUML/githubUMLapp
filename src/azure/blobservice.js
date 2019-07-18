@@ -1,4 +1,5 @@
 import '@babel/polyfill';
+import { By, Key, until } from 'selenium-webdriver';
 const azure = require('azure-storage');
 const { Aborter, BlobURL, BlockBlobURL, ContainerURL, ServiceURL, SharedKeyCredential, StorageURL, uploadStreamToBlockBlob } = require('@azure/storage-blob');
 import sizeOf from 'image-size';
@@ -80,7 +81,16 @@ export function takeUIPictureSendReport(driver, name) {
 export function takeUIPicture(capability, driver, name, gitHash, siteurl) {
     return new Promise(async (resolve, reject) => {
         try {
-            const data = await driver.takeScreenshot();
+
+            await driver.executeScript(`
+                    document.documentElement.style.display = "table";
+                    document.documentElement.style.width = "100%";
+                    document.body.style.display = "table-row";
+                `);
+
+            //const data = await driver.takeScreenshot();
+            let el = driver.findElement(By.xpath('/html/body'))
+            const data = await el.takeScreenshot()
             const buff = new Buffer(data, 'base64');
             const size = sizeOf(buff);
             const imageHash = md5(buff);
@@ -159,3 +169,30 @@ export function checkIfImageExistsLocal() {
         });
     });
 }
+
+export async function fullPageScreenShot(driver) {
+    const now = (Date.now() / 1e3) | 0
+
+    const totalHeight = await driver.executeScript('return document.body.scrollHeight')
+    const windowHeight = await driver.executeScript('return window.outerHeight')
+
+    for (let i = 0; i <= (totalHeight / windowHeight); i++) {
+        await driver.executeScript(`window.scrollTo(0, window.outerHeight*${i})`)
+        const data = await driver.takeScreenshot()
+        saveScreenshot(`home-${i}-${now}.png`,data)
+    }
+
+    driver.quit()
+    console.log('done')
+}
+
+
+
+function saveScreenshot (filename,data){
+      fs.writeFile(`${__dirname}/${filename}`, data.replace(/^data:image\/png;base64,/,''), 'base64', err => {
+        if(err) throw err
+      })
+  
+  }
+
+
