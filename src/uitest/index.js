@@ -32,7 +32,7 @@ export default class UITest {
                 platform: 'Windows 10',
                 screenResolution: '1366x768',
             },
-            windows10Edge: {
+            windows10Edge: {  // erroring out 
                 browserName: 'MicrosoftEdge',
                 version: '18',
                 platform: 'Windows 10',
@@ -103,7 +103,7 @@ export default class UITest {
 
 function methodThatReturnsAPromise(seleniumFunction, driver, capability, hash) {
     return new Promise(async (resolve, reject) => {
-        let value = await seleniumFunction.call(capability, driver, hash).catch((e) => {
+        let value = await seleniumFunction(capability, driver, hash).catch((e) => {
             console.log('returned promise error :', e);
             reject(e);
         });
@@ -155,5 +155,5 @@ function processScripts(capability, hash) {
     });
 }
 
-const test = new UITest('sha123abc');
+const test = new UITest( );
 test.start();

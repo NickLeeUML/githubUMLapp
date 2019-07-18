@@ -9,22 +9,16 @@ dotenv.config();
 import { uploadImage, getBlobUrl, takeUIPicture } from '../../azure/blobservice';
 import { create_Happo_Report } from '../happo.js';
 
-async function myUMLPopupTest_Selenium(driver, hash) {
+async function myUMLPopupTest_Selenium(capability, driver, gitHash) {
     return new Promise(async (resolve, reject) => {
+        const url = 'https://stage.uml.edu/Student-Life/';
         try {
-            const snapshots = [];
-            await driver.get('https://stage.uml.edu/Student-Life/');
-            // let imagedata = await takeUIPicture(driver, 'beforeclick');
-            // snapshots.push(imagedata);
-
+            await driver.get(url);
+            let imagedata = await takeUIPicture(capability, driver, 'before click', gitHash, url);
             const button = await driver.findElement(By.xpath('//*[@id="form"]/header/div/div[2]/nav/ul/li[4]'));
             await button.click();
-
-            // imagedata = await takeUIPicture(driver, 'afterclick');
-            // snapshots.push(imagedata);
-            // await create_Happo_Report(hash, snapshots);
-
-            //potentially want to click on links to navigate to new page
+            await driver.executeScript('var item = document.getElementsByClassName("layout-header__quick-links")[0]; item.style.border = "solid 3px pink";');
+            imagedata = await takeUIPicture(capability, driver, 'after click', gitHash, url);
             resolve('complete');
         } catch (error) {
             reject(error);
@@ -35,7 +29,7 @@ async function myUMLPopupTest_Selenium(driver, hash) {
     });
 }
 
-async function solutionCenterWebsiteTest_Selenium(driver) {
+async function solutionCenterWebsiteTest_Selenium(driver, hash) {
     //searching 'bill' display articles
     return new Promise(async (resolve, reject) => {
         try {
