@@ -43,39 +43,38 @@ app.use(async (req, res, next) => {
 app.post('/events', async (req, res) => {
     //smee server forwarding to here
     const event = req.headers['x-github-event']; //https://developer.github.com/v3/activity/events/types/
-    console.log('x-github-event: ', event)
+    console.log('x-github-event: ', event);
     switch (event) {
         case 'pull_request': // Triggered when a pull request is assigned, unassigned, labeled, unlabeled, opened, edited, closed, reopened, synchronize, ready_for_review, locked, unlocked or when a pull request review is requested or removed.
-            if(req.body.action === ('opened' || 'reopened')) {
+            if (req.body.action === ('opened' || 'reopened')) {
                 create_check_run_from_pullrequest(req);
             }
             break;
 
         case 'check_suite': // Triggered when a check suite is completed, requested, or rerequested.  Also when commit is pushed
-            console.log('check suite ')
-            // create_check_run(req);  // add a check run to that  suit 
+            console.log('check suite ');
+            // create_check_run(req);  // add a check run to that  suit
             break;
 
-        case 'create':  // new branch is created
+        case 'create': // new branch is created
             break;
 
-        case 'push':   // push is created 
-            break;   
+        case 'push': // push is created
+            break;
 
         case 'check_run': //Triggered when a check run is created, rerequested, completed, or has a requested_action.
             if (req.body.check_run.check_suite.app.id.toString() === process.env.GITHUB_APP_IDENTIFIER) {
-
                 switch (req.body.action) {
                     case 'created':
-                        console.log("case: 'check_run' case: 'created' ")
-                        initiate_check_run(req);  // start ui test 
+                        console.log("case: 'check_run' case: 'created' ");
+                        initiate_check_run(req); // start ui test
                         break;
                     case 'rerequested':
                         initiate_check_run(req);
                         break;
                     case 'completed':
                         console.log('completed');
-                        break; 
+                        break;
                     case 'requested_action':
                         console.log('requested_action');
                         break;
