@@ -6,10 +6,11 @@ import "@babel/polyfill";
 import dotenv from 'dotenv';
 dotenv.config();
 
-import fs from'fs';
+import fs from 'fs';
+import path from 'path';
 import https from'https';
 
-const PEM = fs.readFileSync('./umlapp.2019-06-11.private-key.pem', 'utf8');
+const PEM = fs.readFileSync( path.join(__dirname + '/../umlapp.2019-06-11.private-key.pem') , 'utf8');
 const ISSUER_ID = process.env.GITHUB_APP_IDENTIFIER;
 const APP_SECRET = process.env.GITHUB_WEBHOOK_SECRET;
 
@@ -18,7 +19,7 @@ function generateJwtToken() {
     return jsonwebtoken.sign(
         {
             iat: Math.floor(new Date() / 1000),
-            exp: Math.floor(new Date() / 1000) + 600,
+            exp: Math.floor(new Date() / 1000) + 300,
             iss: ISSUER_ID,
         },
         PEM,

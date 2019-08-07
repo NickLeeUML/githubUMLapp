@@ -12,7 +12,7 @@ dotenv.config();
 import '@babel/polyfill';
 
 import { InstallationAccessTokenPromise } from './auth.js';
-import { initiate_check_run, create_check_run } from './helper.js';
+import { initiate_check_run, create_check_run_from_pullrequest } from './helper.js';
 
 const app = express();
 const port = 3000;
@@ -43,20 +43,31 @@ app.use(async (req, res, next) => {
 app.post('/events', async (req, res) => {
     //smee server forwarding to here
     const event = req.headers['x-github-event']; //https://developer.github.com/v3/activity/events/types/
+    console.log('x-github-event: ', event);
     switch (event) {
-        case 'pull_request': // on pull requests start check run
-            create_check_run(req);
+        case 'pull_request': // Triggered when a pull request is assigned, unassigned, labeled, unlabeled, opened, edited, closed, reopened, synchronize, ready_for_review, locked, unlocked or when a pull request review is requested or removed.
+            if (req.body.action === 'opened' || req.body.action === "reopened") {
+                create_check_run_from_pullrequest(req);
+            }
             break;
 
-        case 'check_suite': // on pushes create check run
-            create_check_run(req);
+        case 'check_suite': // Triggered when a check suite is completed, requested, or rerequested.  Also when commit is pushed
+            console.log('check suite ');
+            // create_check_run(req);  // add a check run to that  suit
             break;
 
-        case 'check_run':
+        case 'create': // new branch is created
+            break;
+
+        case 'push': // push is created
+            break;
+
+        case 'check_run': //Triggered when a check run is created, rerequested, completed, or has a requested_action.
             if (req.body.check_run.check_suite.app.id.toString() === process.env.GITHUB_APP_IDENTIFIER) {
                 switch (req.body.action) {
                     case 'created':
-                        initiate_check_run(req);
+                        console.log("case: 'check_run' case: 'created' ");
+                        initiate_check_run(req); // start ui test
                         break;
                     case 'rerequested':
                         initiate_check_run(req);

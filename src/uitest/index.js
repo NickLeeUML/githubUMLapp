@@ -6,6 +6,7 @@ import request from 'request';
 import { myUMLPopupTest_Selenium, solutionCenterWebsiteTest_Selenium } from './selenium/index.js';
 
 import dotenv from 'dotenv';
+import { promises } from 'fs';
 dotenv.config();
 
 const selenium_scripts = [myUMLPopupTest_Selenium];
@@ -20,42 +21,42 @@ export default class UITest {
         };
         this.remoteHub = "http://hub.crossbrowsertesting.com:80/wd/hub'";
         this.browserConfigurations = {
-            windows10Chrome: {
-                browserName: 'Chrome',
-                version: '75x64',
-                platform: 'Windows 10',
-                screenResolution: '1366x768',
-            },
+            // windows10Chrome: {
+            //     browserName: 'Chrome',
+            //     version: '75x64',
+            //     platform: 'Windows 10',
+            //     screenResolution: '1366x768',
+            // },
             windows10Firefox: {
                 browserName: 'Firefox',
                 version: '67x64',
                 platform: 'Windows 10',
                 screenResolution: '1366x768',
             },
-            windows10Edge: {  // erroring out 
-                browserName: 'MicrosoftEdge',
-                version: '18',
-                platform: 'Windows 10',
-                screenResolution: '1366x768',
-            },
+            // windows10Edge: {  // erroring out
+            //     browserName: 'MicrosoftEdge',
+            //     version: '18',
+            //     platform: 'Windows 10',
+            //     screenResolution: '1366x768',
+            // },
             osxSafari: {
                 browserName: 'Safari',
                 version: '12',
                 platform: 'Mac OSX 10.14',
                 screenResolution: '1366x768',
             },
-            osxFirefox: {
-                browserName: 'Firefox',
-                version: '67',
-                platform: 'Mac OSX 10.14',
-                screenResolution: '1366x768',
-            },
-            osxChrome: {
-                browserName: 'Chrome',
-                version: '75x64',
-                platform: 'Mac OSX 10.14',
-                screenResolution: '1366x768',
-            },
+            // osxFirefox: {
+            //     browserName: 'Firefox',
+            //     version: '67',
+            //     platform: 'Mac OSX 10.14',
+            //     screenResolution: '1366x768',
+            // },
+            // osxChrome: {
+            //     browserName: 'Chrome',
+            //     version: '75x64',
+            //     platform: 'Mac OSX 10.14',
+            //     screenResolution: '1366x768',
+            // },
         };
         this.screenSizes = {
             small: {
@@ -76,19 +77,28 @@ export default class UITest {
     }
 
     start() {
-        this.status.running = true;
-        const browserConfigurationsArray = Object.values(this.browserConfigurations);
+        return new Promise((resolve, reject) => {
+            this.status.running = true;
+            const browserConfigurationsArray = Object.values(this.browserConfigurations);
 
-        let results = browserConfigurationsArray.reduce(async (accum, current) => {
-            //current is data for pass to functio
-            await accum;
+            let results = browserConfigurationsArray.reduce(async (accum, current) => {
+                //current is data for pass to functio
+                await accum;
 
-            return processScripts(current, this.hash);
-        }, Promise.resolve());
+                return processScripts(current, this.hash);
+            }, Promise.resolve());
 
-        results.then((e) => {
-            console.log('all done');
-            this.status.running = false;
+            results
+                .then((e) => {
+                    console.log('all done');
+                    this.status.running = false;
+                    resolve('success');
+                })
+                .catch((e) => {
+                    this.status.running = false;
+                    console.log('error broski');
+                    reject(e);
+                });
         });
     }
 
@@ -140,6 +150,7 @@ function processScripts(capability, hash) {
                 .setRect({ width: 1200, height: 600 });
 
             return methodThatReturnsAPromise(func, driver, capability, hash).catch((e) => {
+                console.error('157');
                 console.error(e);
             });
         }, Promise.resolve());
@@ -155,5 +166,5 @@ function processScripts(capability, hash) {
     });
 }
 
-const test = new UITest( );
-test.start();
+// const test = new UITest( );
+// test.start();
