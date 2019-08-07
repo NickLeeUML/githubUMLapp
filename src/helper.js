@@ -25,7 +25,7 @@ async function initiate_check_run(req) {
     })();
 
     try {
-        const test = new UITest('00007');
+        const test = new UITest('00008');
         const result = await test.start();
         console.log('result: ', result);
 

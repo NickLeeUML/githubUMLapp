@@ -46,7 +46,7 @@ app.post('/events', async (req, res) => {
     console.log('x-github-event: ', event);
     switch (event) {
         case 'pull_request': // Triggered when a pull request is assigned, unassigned, labeled, unlabeled, opened, edited, closed, reopened, synchronize, ready_for_review, locked, unlocked or when a pull request review is requested or removed.
-            if (req.body.action === ('opened' || 'reopened')) {
+            if (req.body.action === 'opened' || req.body.action === "reopened") {
                 create_check_run_from_pullrequest(req);
             }
             break;

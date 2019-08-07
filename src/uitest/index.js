@@ -95,6 +95,7 @@ export default class UITest {
                 this.status.running = false;
                 resolve("success")
             }).catch(e => {
+                this.status.running = false; 
                 console.log("error broski")
                 reject(e)
             });
@@ -153,6 +154,7 @@ function processScripts(capability, hash) {
                 .setRect({ width: 1200, height: 600 });
 
             return methodThatReturnsAPromise(func, driver, capability, hash).catch((e) => {
+                console.error('157')
                 console.error(e);
             });
         }, Promise.resolve());
