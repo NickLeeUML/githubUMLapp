@@ -33,7 +33,7 @@ export default class UITest {
                 platform: 'Windows 10',
                 screenResolution: '1366x768',
             },
-            // windows10Edge: {  // erroring out 
+            // windows10Edge: {  // erroring out
             //     browserName: 'MicrosoftEdge',
             //     version: '18',
             //     platform: 'Windows 10',
@@ -77,33 +77,29 @@ export default class UITest {
     }
 
     start() {
-
         return new Promise((resolve, reject) => {
-
             this.status.running = true;
             const browserConfigurationsArray = Object.values(this.browserConfigurations);
-    
+
             let results = browserConfigurationsArray.reduce(async (accum, current) => {
                 //current is data for pass to functio
                 await accum;
-    
+
                 return processScripts(current, this.hash);
             }, Promise.resolve());
-    
-            results.then((e) => {
-                console.log('all done');
-                this.status.running = false;
-                resolve("success")
-            }).catch(e => {
-                this.status.running = false; 
-                console.log("error broski")
-                reject(e)
-            });
 
-        })
-
-    
-      
+            results
+                .then((e) => {
+                    console.log('all done');
+                    this.status.running = false;
+                    resolve('success');
+                })
+                .catch((e) => {
+                    this.status.running = false;
+                    console.log('error broski');
+                    reject(e);
+                });
+        });
     }
 
     changeStatus = (running, error, message) => {
@@ -154,7 +150,7 @@ function processScripts(capability, hash) {
                 .setRect({ width: 1200, height: 600 });
 
             return methodThatReturnsAPromise(func, driver, capability, hash).catch((e) => {
-                console.error('157')
+                console.error('157');
                 console.error(e);
             });
         }, Promise.resolve());
