@@ -20,7 +20,7 @@
     "chalk": "^2.4.2",
     "dotenv": "^8.0.0",
     "esm": "^3.2.25",
-    "express": "^4.17.1",
+    "express": "^4.17.3",
     "https": "^1.0.0",
     "image-size": "^0.7.4",
     "jsonwebtoken": "^8.5.1",
